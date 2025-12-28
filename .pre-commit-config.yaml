@@ -11,10 +11,10 @@ repos:
           - --unsafe
       - id: end-of-file-fixer
         exclude: |
-            (?x)^(
-                frontend/src/client/.*|
-                backend/app/email-templates/build/.*
-            )$
+          (?x)^(
+              frontend/src/client/.*|
+              backend/app/email-templates/build/.*
+          )$
       - id: trailing-whitespace
         exclude: ^frontend/src/client/.*
   - repo: local
@@ -35,7 +35,7 @@ repos:
 
       - id: local-ruff-format
         name: ruff format
-        entry: uv run ruff format --force-exclude --exit-non-zero-on-format
+        entry: uv run ruff format --force-exclude
         require_serial: true
         language: unsupported
         types: [python]
