@@ -10,11 +10,8 @@ from app.api.deps import (
     SessionDep,
     get_current_active_superuser,
 )
-from app.core.config import settings
-from app.core.security import get_password_hash, verify_password
-from app.models import (
-    Item,
-    Message,
+from app.apps.items.models import Item
+from app.apps.users.models import (
     UpdatePassword,
     User,
     UserCreate,
@@ -24,9 +21,12 @@ from app.models import (
     UserUpdate,
     UserUpdateMe,
 )
+from app.apps.utils.models import Message
+from app.core.config import settings
+from app.core.security import get_password_hash, verify_password
 from app.utils import generate_new_account_email, send_email
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter()
 
 
 @router.get(

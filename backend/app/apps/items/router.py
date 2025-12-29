@@ -5,9 +5,11 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate, Message
+from app.apps.utils.models import Message
 
-router = APIRouter(prefix="/items", tags=["items"])
+from .models import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate
+
+router = APIRouter()
 
 
 @router.get("/", response_model=ItemsPublic)

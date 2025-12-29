@@ -8,14 +8,15 @@ from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
 from sqlmodel import Session
 
+from app.apps.login.models import TokenPayload
+from app.apps.users.models import User
 from app.core import security
 from app.core.config import settings
 from app.core.db import engine
-from app.models import TokenPayload, User
 
-reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
-)
+token_url = f"{settings.API_V1_STR}/login/access-token"
+oauth2_optional = OAuth2PasswordBearer(tokenUrl=token_url, auto_error=False)
+oauth2_required = OAuth2PasswordBearer(tokenUrl=token_url)
 
 
 def get_db() -> Generator[Session, None, None]:
@@ -24,21 +25,46 @@ def get_db() -> Generator[Session, None, None]:
 
 
 SessionDep = Annotated[Session, Depends(get_db)]
-TokenDep = Annotated[str, Depends(reusable_oauth2)]
+OptionalTokenDep = Annotated[str | None, Depends(oauth2_optional)]
+TokenDep = Annotated[str, Depends(oauth2_required)]
 
 
-def get_current_user(session: SessionDep, token: TokenDep) -> User:
+def parse_token(token: str) -> TokenPayload:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
-        token_data = TokenPayload(**payload)
+        return TokenPayload(**payload)
     except (InvalidTokenError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
         )
-    user = session.get(User, token_data.sub)
+
+
+def get_user_from_db(session: Session, user_id: str) -> User | None:
+    return session.get(User, user_id)
+
+
+def get_optional_current_user(
+    session: SessionDep, token: OptionalTokenDep
+) -> User | None:
+    if not token:
+        return None
+    token_data = parse_token(token)
+    if not token_data.sub:
+        return None
+    return get_user_from_db(session, token_data.sub)
+
+
+OptionalCurrentUser = Annotated[User | None, Depends(get_optional_current_user)]
+
+
+def get_current_user(session: SessionDep, token: TokenDep) -> User:
+    token_data = parse_token(token)
+    if not token_data.sub:
+        raise HTTPException(status_code=404, detail="User not found")
+    user = get_user_from_db(session, token_data.sub)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if not user.is_active:
