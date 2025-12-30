@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
+from app.apps.common.router import router as utils_router
 from app.apps.items.router import router as items_router
 from app.apps.login.router import router as login_router
 from app.apps.users.private_router import router as private_users_router
 from app.apps.users.router import router as users_router
-from app.apps.utils.router import router as utils_router
 from app.core.config import settings
 
 from .graphql import gql_router

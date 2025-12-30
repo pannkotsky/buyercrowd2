@@ -2,6 +2,8 @@ import logging
 
 from sqlmodel import Session
 
+# Import all models to ensure they're registered with SQLAlchemy
+import app.models  # noqa: F401
 from app.core.db import engine, init_db
 
 logging.basicConfig(level=logging.INFO)

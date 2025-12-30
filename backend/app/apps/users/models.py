@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from pydantic import EmailStr
@@ -51,6 +52,11 @@ class User(UserBase, table=True):
         back_populates="owner",
         cascade_delete=True,
     )
+
+
+class Users(SQLModel):
+    data: Sequence[User]
+    count: int
 
 
 # Properties to return via API, id is always required

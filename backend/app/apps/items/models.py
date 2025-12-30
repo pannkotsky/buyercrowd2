@@ -1,10 +1,9 @@
 import uuid
-from typing import TYPE_CHECKING, Optional
+from collections.abc import Sequence
 
 from sqlmodel import Field, Relationship, SQLModel
 
-if TYPE_CHECKING:
-    from app.apps.users.models import User
+from app.apps.users.models import User, UserPublic
 
 
 # Shared properties
@@ -29,13 +28,18 @@ class Item(ItemBase, table=True):
     owner_id: uuid.UUID = Field(
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
-    owner: Optional["User"] = Relationship(back_populates="items")
+    owner: User | None = Relationship(back_populates="items")
+
+
+class Items(SQLModel):
+    data: Sequence[Item]
+    count: int
 
 
 # Properties to return via API, id is always required
 class ItemPublic(ItemBase):
     id: uuid.UUID
-    owner_id: uuid.UUID
+    owner: UserPublic
 
 
 class ItemsPublic(SQLModel):

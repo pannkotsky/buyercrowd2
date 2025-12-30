@@ -4,7 +4,8 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from app.core.config import settings
-from tests.utils.item import create_random_item
+
+from .utils import create_random_item
 
 
 def test_create_item(

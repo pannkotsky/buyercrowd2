@@ -80,3 +80,8 @@ sort = "-Cover"
 
 [tool.coverage.html]
 show_contexts = true
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py"]
+testpaths = ["app"]
+norecursedirs = [".git", ".venv", "venv", "__pycache__", "*.egg"]

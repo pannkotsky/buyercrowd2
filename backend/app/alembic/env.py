@@ -29,6 +29,11 @@ target_metadata = SQLModel.metadata
 
 
 def get_url():
+    import os
+
+    # If RUN_TEST_MIGRATIONS is set, use test database
+    if os.getenv("RUN_TEST_MIGRATIONS") == "1":
+        return str(settings.SQLALCHEMY_TEST_DATABASE_URI)
     return str(settings.SQLALCHEMY_DATABASE_URI)
 
 

@@ -1,11 +1,11 @@
+import uuid
 from typing import TYPE_CHECKING
 
 import strawberry
 from graphql import GraphQLError
-from sqlmodel import func, select
 from strawberry.types import Info
 
-from app.apps.users.models import User as UserModel
+from app.apps.users import crud
 
 from .schema import User, Users
 
@@ -28,15 +28,20 @@ class Query:
         if not user or not user.is_superuser:
             raise GraphQLError("Forbidden")
 
-        session = info.context.db_session
-        count_statement = select(func.count()).select_from(UserModel)
-
-        count = session.exec(count_statement).one()
-
-        statement = select(UserModel).offset(skip).limit(limit)
-        users = session.exec(statement).all()
+        users = crud.get_users(session=info.context.db_session, skip=skip, limit=limit)
 
         return Users(
-            data=[User.from_pydantic(user) for user in users],
-            count=count,
+            data=[User.from_pydantic(user) for user in users.data],
+            count=users.count,
         )
+
+    @strawberry.field
+    async def user(self, info: Info["Context"], user_id: uuid.UUID) -> User | None:
+        current_user = info.context.current_user
+        if not current_user or (
+            user_id != current_user.id and not current_user.is_superuser
+        ):
+            raise GraphQLError("Forbidden")
+
+        user = crud.get_user_by_id(session=info.context.db_session, id=user_id)
+        return user and User.from_pydantic(user)
