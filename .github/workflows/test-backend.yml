@@ -28,7 +28,7 @@ jobs:
       - run: docker compose down -v --remove-orphans
       - run: docker compose up -d db mailcatcher
       - name: Sync dependencies
-        run: uv sync
+        run: uv sync --all-groups
         working-directory: backend
       - name: Migrate DB
         run: uv run bash scripts/prestart.sh
