@@ -10,6 +10,6 @@ export RUN_TEST_MIGRATIONS=1
 alembic upgrade head
 unset RUN_TEST_MIGRATIONS
 
-coverage run -m pytest
-coverage report
-coverage html --title "${@-coverage}"
+uv run coverage run -m pytest
+uv run coverage report
+uv run coverage html --title "${@-coverage}"
