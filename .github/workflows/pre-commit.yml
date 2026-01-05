@@ -34,13 +34,13 @@ jobs:
         name: Checkout PR for fork
         if: env.HAS_SECRETS == 'false'
         with:
-        # To be able to commit it needs the head branch of the PR, the remote one
+          # To be able to commit it needs the head branch of the PR, the remote one
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
         with:
@@ -77,7 +77,7 @@ jobs:
         run: exit 1
 
   # https://github.com/marketplace/actions/alls-green#why
-  pre-commit-alls-green:  # This job does nothing and is only used for the branch protection
+  pre-commit-alls-green: # This job does nothing and is only used for the branch protection
     if: always()
     needs:
       - pre-commit
