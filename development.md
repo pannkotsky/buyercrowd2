@@ -1,22 +1,20 @@
-# FastAPI Project - Development
+# Buyercrowd - Development
 
 ## Docker Compose
 
-* Start the local stack with Docker Compose:
+- Start the local stack with Docker Compose:
 
 ```bash
 docker compose watch
 ```
 
-* Now you can open your browser and interact with these URLs:
+- Now you can open your browser and interact with these URLs:
 
 Frontend, built with Docker, with routes handled based on the path: <http://localhost:5173>
 
 Backend, JSON based web API based on OpenAPI: <http://localhost:8000>
 
 Automatic interactive documentation with Swagger UI (from the OpenAPI backend): <http://localhost:8000/docs>
-
-Adminer, database web administration: <http://localhost:8080>
 
 Traefik UI, to see how the routes are being handled by the proxy: <http://localhost:8090>
 
@@ -40,9 +38,9 @@ Mailcatcher is a simple SMTP server that catches all emails sent by the backend 
 
 This is useful for:
 
-* Testing email functionality during development
-* Verifying email content and formatting
-* Debugging email-related functionality without sending real emails
+- Testing email functionality during development
+- Verifying email content and formatting
+- Debugging email-related functionality without sending real emails
 
 The backend is automatically configured to use Mailcatcher when running with Docker Compose locally (SMTP on port 1025). All captured emails can be viewed at <http://localhost:1080>.
 
@@ -80,25 +78,25 @@ cd backend
 fastapi dev app/main.py
 ```
 
-## Docker Compose in `localhost.tiangolo.com`
+## Docker Compose in `localhost.buyercrowd.com`
 
-When you start the Docker Compose stack, it uses `localhost` by default, with different ports for each service (backend, frontend, adminer, etc).
+When you start the Docker Compose stack, it uses `localhost` by default, with different ports for each service (backend, frontend, etc).
 
-When you deploy it to production (or staging), it will deploy each service in a different subdomain, like `api.example.com` for the backend and `dashboard.example.com` for the frontend.
+When you deploy it to production (or staging), it will deploy each service in a different subdomain, like `api.buyercrowd.com` for the backend and `dashboard.buyercrowd.com` for the frontend.
 
 In the guide about [deployment](deployment.md) you can read about Traefik, the configured proxy. That's the component in charge of transmitting traffic to each service based on the subdomain.
 
 If you want to test that it's all working locally, you can edit the local `.env` file, and change:
 
 ```dotenv
-DOMAIN=localhost.tiangolo.com
+DOMAIN=localhost.buyercrowd.com
 ```
 
 That will be used by the Docker Compose files to configure the base domain for the services.
 
-Traefik will use this to transmit traffic at `api.localhost.tiangolo.com` to the backend, and traffic at `dashboard.localhost.tiangolo.com` to the frontend.
+Traefik will use this to transmit traffic at `api.localhost.buyercrowd.com` to the backend, and traffic at `dashboard.localhost.buyercrowd.com` to the frontend.
 
-The domain `localhost.tiangolo.com` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
+The domain `localhost.buyercrowd.com` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
 
 After you update it, run again:
 
@@ -106,7 +104,7 @@ After you update it, run again:
 docker compose watch
 ```
 
-When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.tiangolo.com` and `dashboard.localhost.tiangolo.com`.
+When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.buyercrowd.com` and `dashboard.localhost.buyercrowd.com`.
 
 ## Docker Compose files and env vars
 
@@ -197,26 +195,22 @@ Automatic Interactive Docs (Swagger UI): <http://localhost:8000/docs>
 
 Automatic Alternative Docs (ReDoc): <http://localhost:8000/redoc>
 
-Adminer: <http://localhost:8080>
-
 Traefik UI: <http://localhost:8090>
 
 MailCatcher: <http://localhost:1080>
 
-### Development URLs with `localhost.tiangolo.com` Configured
+### Development URLs with `localhost.buyercrowd.com` Configured
 
 Development URLs, for local development.
 
-Frontend: <http://dashboard.localhost.tiangolo.com>
+Frontend: <http://dashboard.localhost.buyercrowd.com>
 
-Backend: <http://api.localhost.tiangolo.com>
+Backend: <http://api.localhost.buyercrowd.com>
 
-Automatic Interactive Docs (Swagger UI): <http://api.localhost.tiangolo.com/docs>
+Automatic Interactive Docs (Swagger UI): <http://api.localhost.buyercrowd.com/docs>
 
-Automatic Alternative Docs (ReDoc): <http://api.localhost.tiangolo.com/redoc>
+Automatic Alternative Docs (ReDoc): <http://api.localhost.buyercrowd.com/redoc>
 
-Adminer: <http://localhost.tiangolo.com:8080>
+Traefik UI: <http://localhost.buyercrowd.com:8090>
 
-Traefik UI: <http://localhost.tiangolo.com:8090>
-
-MailCatcher: <http://localhost.tiangolo.com:1080>
+MailCatcher: <http://localhost.buyercrowd.com:1080>
