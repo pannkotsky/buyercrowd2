@@ -10,7 +10,7 @@ updates:
     labels: [dependencies, internal]
   # Python uv
   - package-ecosystem: uv
-    directory: /backend
+    directory: /back
     schedule:
       interval: weekly
     commit-message:
@@ -18,7 +18,7 @@ updates:
     labels: [dependencies, internal]
   # npm
   - package-ecosystem: npm
-    directory: /frontend
+    directory: /front
     schedule:
       interval: weekly
     commit-message:
@@ -29,8 +29,8 @@ updates:
   # Docker
   - package-ecosystem: docker
     directories:
-      - /backend
-      - /frontend
+      - /back
+      - /front
     schedule:
       interval: weekly
     commit-message:

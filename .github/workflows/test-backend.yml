@@ -26,22 +26,22 @@ jobs:
           version: "0.9.18"
           enable-cache: true
       - run: uv sync
-        working-directory: backend
+        working-directory: back
       - run: docker compose down -v --remove-orphans
       - run: docker compose up -d db mailcatcher
       - name: Migrate DB
         run: uv run bash scripts/prestart.sh
-        working-directory: backend
+        working-directory: back
       - name: Run tests
         run: uv run bash scripts/tests-start.sh "Coverage for ${{ github.sha }}"
-        working-directory: backend
+        working-directory: back
       - run: docker compose down -v --remove-orphans
       - name: Store coverage files
         uses: actions/upload-artifact@v6
         with:
           name: coverage-html
-          path: backend/htmlcov
+          path: back/htmlcov
           include-hidden-files: true
       - name: Coverage report
         run: uv run coverage report --fail-under=10
-        working-directory: backend
+        working-directory: back

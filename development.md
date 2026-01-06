@@ -29,7 +29,7 @@ docker compose logs
 To check the logs of a specific service, add the name of the service, e.g.:
 
 ```bash
-docker compose logs backend
+docker compose logs back
 ```
 
 ## Mailcatcher
@@ -52,59 +52,31 @@ For the backend and frontend, they use the same port that would be used by their
 
 This way, you could turn off a Docker Compose service and start its local development service, and everything would keep working, because it all uses the same ports.
 
-For example, you can stop that `frontend` service in the Docker Compose, in another terminal, run:
+For example, you can stop that `front` service in the Docker Compose, in another terminal, run:
 
 ```bash
-docker compose stop frontend
+docker compose stop front
 ```
 
 And then start the local frontend development server:
 
 ```bash
-cd frontend
+cd front
 npm run dev
 ```
 
-Or you could stop the `backend` Docker Compose service:
+Or you could stop the `back` Docker Compose service:
 
 ```bash
-docker compose stop backend
+docker compose stop back
 ```
 
 And then you can run the local development server for the backend:
 
 ```bash
-cd backend
+cd back
 fastapi dev app/main.py
 ```
-
-## Docker Compose in `localhost.buyercrowd.com`
-
-When you start the Docker Compose stack, it uses `localhost` by default, with different ports for each service (backend, frontend, etc).
-
-When you deploy it to production (or staging), it will deploy each service in a different subdomain, like `api.buyercrowd.com` for the backend and `dashboard.buyercrowd.com` for the frontend.
-
-In the guide about [deployment](deployment.md) you can read about Traefik, the configured proxy. That's the component in charge of transmitting traffic to each service based on the subdomain.
-
-If you want to test that it's all working locally, you can edit the local `.env` file, and change:
-
-```dotenv
-DOMAIN=localhost.buyercrowd.com
-```
-
-That will be used by the Docker Compose files to configure the base domain for the services.
-
-Traefik will use this to transmit traffic at `api.localhost.buyercrowd.com` to the backend, and traffic at `dashboard.localhost.buyercrowd.com` to the frontend.
-
-The domain `localhost.buyercrowd.com` is a special domain that is configured (with all its subdomains) to point to `127.0.0.1`. This way you can use that for your local development.
-
-After you update it, run again:
-
-```bash
-docker compose watch
-```
-
-When deploying, for example in production, the main Traefik is configured outside of the Docker Compose files. For local development, there's an included Traefik in `docker-compose.override.yml`, just to let you test that the domains work as expected, for example with `api.localhost.buyercrowd.com` and `dashboard.localhost.buyercrowd.com`.
 
 ## Docker Compose files and env vars
 
@@ -144,7 +116,7 @@ You can find a file `.pre-commit-config.yaml` with configurations at the root of
 
 After having the `prek` tool installed and available, you need to "install" it in the local repository, so that it runs automatically before each commit.
 
-Using `uv`, you could do it with (make sure you are inside `backend` folder):
+Using `uv`, you could do it with (make sure you are inside `back` folder):
 
 ```bash
 ❯ uv run prek install -f

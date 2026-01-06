@@ -10,7 +10,7 @@
       "request": "launch",
       "module": "uvicorn",
       "args": ["app.main:app", "--reload"],
-      "cwd": "${workspaceFolder}/backend",
+      "cwd": "${workspaceFolder}/back",
       "envFile": "${workspaceFolder}/.env",
       "console": "internalConsole"
     },
@@ -20,7 +20,7 @@
       "request": "launch",
       "module": "pytest",
       "args": ["tests"],
-      "cwd": "${workspaceFolder}/backend",
+      "cwd": "${workspaceFolder}/back",
       "console": "internalConsole"
     },
     {
@@ -28,7 +28,7 @@
       "request": "launch",
       "name": "Debug Frontend: Launch Chrome against http://localhost:5173",
       "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/frontend"
+      "webRoot": "${workspaceFolder}/front"
     }
   ]
 }
