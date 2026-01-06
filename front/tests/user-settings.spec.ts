@@ -4,7 +4,7 @@ import { createUser } from "./utils/privateApi.ts"
 import { randomEmail, randomPassword } from "./utils/random.ts"
 import { logInUser, logOutUser } from "./utils/user.ts"
 
-const tabs = ["My profile", "Password", "Danger zone"]
+const tabs = ["My profile", "Danger zone"]
 
 // User Information
 
@@ -128,103 +128,6 @@ test.describe("Edit user with invalid data", () => {
     await page.getByRole("button", { name: "Cancel" }).first().click()
     await expect(
       page.locator("form").getByText(email, { exact: true }),
-    ).toBeVisible()
-  })
-})
-
-// Change Password
-
-test.describe("Change password successfully", () => {
-  test.use({ storageState: { cookies: [], origins: [] } })
-
-  test("Update password successfully", async ({ page }) => {
-    const email = randomEmail()
-    const password = randomPassword()
-    const NewPassword = randomPassword()
-
-    await createUser({ email, password })
-
-    // Log in the user
-    await logInUser(page, email, password)
-
-    await page.goto("/settings")
-    await page.getByRole("tab", { name: "Password" }).click()
-    await page.getByTestId("current-password-input").fill(password)
-    await page.getByTestId("new-password-input").fill(NewPassword)
-    await page.getByTestId("confirm-password-input").fill(NewPassword)
-    await page.getByRole("button", { name: "Update Password" }).click()
-    await expect(page.getByText("Password updated successfully")).toBeVisible()
-
-    await logOutUser(page)
-
-    // Check if the user can log in with the new password
-    await logInUser(page, email, NewPassword)
-  })
-})
-
-test.describe("Change password with invalid data", () => {
-  test.use({ storageState: { cookies: [], origins: [] } })
-
-  test("Update password with weak passwords", async ({ page }) => {
-    const email = randomEmail()
-    const password = randomPassword()
-    const weakPassword = "weak"
-
-    await createUser({ email, password })
-
-    // Log in the user
-    await logInUser(page, email, password)
-
-    await page.goto("/settings")
-    await page.getByRole("tab", { name: "Password" }).click()
-    await page.getByTestId("current-password-input").fill(password)
-    await page.getByTestId("new-password-input").fill(weakPassword)
-    await page.getByTestId("confirm-password-input").fill(weakPassword)
-    await page.getByRole("button", { name: "Update Password" }).click()
-    await expect(
-      page.getByText("Password must be at least 8 characters"),
-    ).toBeVisible()
-  })
-
-  test("New password and confirmation password do not match", async ({
-    page,
-  }) => {
-    const email = randomEmail()
-    const password = randomPassword()
-    const newPassword = randomPassword()
-    const confirmPassword = randomPassword()
-
-    await createUser({ email, password })
-
-    // Log in the user
-    await logInUser(page, email, password)
-
-    await page.goto("/settings")
-    await page.getByRole("tab", { name: "Password" }).click()
-    await page.getByTestId("current-password-input").fill(password)
-    await page.getByTestId("new-password-input").fill(newPassword)
-    await page.getByTestId("confirm-password-input").fill(confirmPassword)
-    await page.getByRole("button", { name: "Update Password" }).click()
-    await expect(page.getByText("The passwords don't match")).toBeVisible()
-  })
-
-  test("Current password and new password are the same", async ({ page }) => {
-    const email = randomEmail()
-    const password = randomPassword()
-
-    await createUser({ email, password })
-
-    // Log in the user
-    await logInUser(page, email, password)
-
-    await page.goto("/settings")
-    await page.getByRole("tab", { name: "Password" }).click()
-    await page.getByTestId("current-password-input").fill(password)
-    await page.getByTestId("new-password-input").fill(password)
-    await page.getByTestId("confirm-password-input").fill(password)
-    await page.getByRole("button", { name: "Update Password" }).click()
-    await expect(
-      page.getByText("New password cannot be the same as the current one"),
     ).toBeVisible()
   })
 })

@@ -120,14 +120,12 @@ export const ItemPublicSchema = {
             format: 'uuid',
             title: 'Id'
         },
-        owner_id: {
-            type: 'string',
-            format: 'uuid',
-            title: 'Owner Id'
+        owner: {
+            '$ref': '#/components/schemas/UserPublic'
         }
     },
     type: 'object',
-    required: ['title', 'id', 'owner_id'],
+    required: ['title', 'id', 'owner'],
     title: 'ItemPublic'
 } as const;
 
@@ -192,24 +190,6 @@ export const MessageSchema = {
     type: 'object',
     required: ['message'],
     title: 'Message'
-} as const;
-
-export const NewPasswordSchema = {
-    properties: {
-        token: {
-            type: 'string',
-            title: 'Token'
-        },
-        new_password: {
-            type: 'string',
-            maxLength: 128,
-            minLength: 8,
-            title: 'New Password'
-        }
-    },
-    type: 'object',
-    required: ['token', 'new_password'],
-    title: 'NewPassword'
 } as const;
 
 export const PrivateUserCreateSchema = {
@@ -459,16 +439,9 @@ export const UserUpdateMeSchema = {
             title: 'Full Name'
         },
         email: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255,
-                    format: 'email'
-                },
-                {
-                    type: 'null'
-                }
-            ],
+            type: 'string',
+            maxLength: 255,
+            format: 'email',
             title: 'Email'
         }
     },

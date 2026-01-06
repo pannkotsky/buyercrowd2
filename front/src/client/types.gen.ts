@@ -22,7 +22,7 @@ export type ItemPublic = {
     title: string;
     description?: (string | null);
     id: string;
-    owner_id: string;
+    owner: UserPublic;
 };
 
 export type ItemsPublic = {
@@ -37,11 +37,6 @@ export type ItemUpdate = {
 
 export type Message = {
     message: string;
-};
-
-export type NewPassword = {
-    token: string;
-    new_password: string;
 };
 
 export type PrivateUserCreate = {
@@ -98,7 +93,7 @@ export type UserUpdate = {
 
 export type UserUpdateMe = {
     full_name?: (string | null);
-    email?: (string | null);
+    email?: string;
 };
 
 export type ValidationError = {
@@ -106,6 +101,10 @@ export type ValidationError = {
     msg: string;
     type: string;
 };
+
+export type GraphqlHandleHttpGetResponse = (unknown);
+
+export type GraphqlHandleHttpPostResponse = (unknown);
 
 export type ItemsReadItemsData = {
     limit?: number;
@@ -146,24 +145,6 @@ export type LoginLoginAccessTokenData = {
 export type LoginLoginAccessTokenResponse = (Token);
 
 export type LoginTestTokenResponse = (UserPublic);
-
-export type LoginRecoverPasswordData = {
-    email: string;
-};
-
-export type LoginRecoverPasswordResponse = (Message);
-
-export type LoginResetPasswordData = {
-    requestBody: NewPassword;
-};
-
-export type LoginResetPasswordResponse = (Message);
-
-export type LoginRecoverPasswordHtmlContentData = {
-    email: string;
-};
-
-export type LoginRecoverPasswordHtmlContentResponse = (string);
 
 export type PrivateCreateUserData = {
     requestBody: PrivateUserCreate;
@@ -224,6 +205,12 @@ export type UsersDeleteUserData = {
 };
 
 export type UsersDeleteUserResponse = (Message);
+
+export type UsersReadUserItemsData = {
+    userId: string;
+};
+
+export type UsersReadUserItemsResponse = (ItemsPublic);
 
 export type UtilsTestEmailData = {
     emailTo: string;

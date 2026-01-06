@@ -13,7 +13,7 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    allowedHosts: ["localhost", "frontend"],
+    allowedHosts: ["localhost", "frontend", "host.docker.internal"],
   },
   plugins: [
     tanstackRouter({
