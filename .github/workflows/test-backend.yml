@@ -27,7 +27,7 @@ jobs:
           enable-cache: true
       - run: uv sync
         working-directory: back
-      - run: docker compose down -v --remove-orphans
+      - run: make down_dev
       - run: docker compose -f docker-compose-base.yml -f docker-compose-local.yml up -d db
       - name: Migrate DB
         run: uv run bash scripts/prestart.sh
@@ -35,7 +35,7 @@ jobs:
       - name: Run tests
         run: uv run bash scripts/tests-start.sh "Coverage for ${{ github.sha }}"
         working-directory: back
-      - run: docker compose down -v --remove-orphans
+      - run: make down_dev
       - name: Store coverage files
         uses: actions/upload-artifact@v6
         with:

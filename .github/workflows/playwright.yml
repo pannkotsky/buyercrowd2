@@ -72,11 +72,11 @@ jobs:
       - run: uv run bash scripts/generate-client.sh
         env:
           VIRTUAL_ENV: back/.venv
-      - run: docker compose build
-      - run: docker compose down -v --remove-orphans
+      - run: make build_prod
+      - run: make down_prod
       - name: Run Playwright tests
         run: docker compose run --rm playwright npx playwright test --fail-on-flaky-tests --trace=retain-on-failure --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-      - run: docker compose down -v --remove-orphans
+      - run: make down_prod
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
