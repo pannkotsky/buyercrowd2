@@ -5,7 +5,7 @@ import strawberry
 from graphql import GraphQLError
 from strawberry.types import Info
 
-from app.apps.users import crud
+from app.apps.users.crud import UserCrud
 from app.apps.users.models import UpdatePassword, UserCreate, UserUpdate, UserUpdateMe
 from app.core.security import verify_password
 from app.graphql_utils import input_to_pydantic
@@ -53,9 +53,7 @@ class Mutation:
         if not current_user or not current_user.is_superuser:
             raise GraphQLError("Forbidden")
 
-        user = crud.create_user(
-            session=info.context.db_session, user_create=input.to_pydantic()
-        )
+        user = UserCrud(info.context.db_session).create(user_create=input.to_pydantic())
         return User.from_pydantic(user)
 
     @strawberry.field
@@ -69,22 +67,18 @@ class Mutation:
         if not current_user or not current_user.is_superuser:
             raise GraphQLError("Forbidden")
 
-        session = info.context.db_session
-        user = crud.get_user_by_id(session=session, id=user_id)
+        user_crud = UserCrud(info.context.db_session)
+        user = user_crud.read(id=user_id)
         if not user:
             raise GraphQLError("The user with this id does not exist in the system")
 
         user_in = input_to_pydantic(input, UserUpdate)
         if user_in.email:
-            existing_user = crud.get_user_by_email(session=session, email=user_in.email)
+            existing_user = user_crud.read_by_email(email=user_in.email)
             if existing_user and existing_user.id != user_id:
                 raise GraphQLError("User with this email already exists")
 
-        user = crud.update_user(
-            session=info.context.db_session,
-            db_user=user,
-            user_in=user_in,
-        )
+        user = user_crud.update(db_user=user, user_in=user_in)
         return User.from_pydantic(user)
 
     @strawberry.field
@@ -98,8 +92,8 @@ class Mutation:
             raise GraphQLError("Unauthorized")
 
         user_in = input_to_pydantic(input, UserUpdateMe)
-        current_user = crud.update_user_me(
-            session=info.context.db_session, db_user=current_user, user_in=user_in
+        current_user = UserCrud(info.context.db_session).update_me(
+            db_user=current_user, user_in=user_in
         )
         return User.from_pydantic(current_user)
 
@@ -122,8 +116,7 @@ class Mutation:
         if passwords.current_password == passwords.new_password:
             raise GraphQLError("New password cannot be the same as the current one")
 
-        crud.update_password(
-            session=info.context.db_session,
+        UserCrud(info.context.db_session).update_password(
             user=current_user,
             new_password=passwords.new_password,
         )

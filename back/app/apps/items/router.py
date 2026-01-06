@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import CurrentUser, SessionDep
 from app.apps.common.models import Message
 
-from . import crud
+from .crud import ItemCrud
 from .models import (
     Item,
     ItemCreate,
@@ -25,8 +25,7 @@ def read_items(
     """
     Retrieve items.
     """
-    return crud.get_items(
-        session=session,
+    return ItemCrud(session).list(
         skip=skip,
         limit=limit,
         user_id=current_user.id if not current_user.is_superuser else None,
@@ -38,7 +37,7 @@ def read_item(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> 
     """
     Get item by ID.
     """
-    item = crud.get_item_by_id(session=session, id=id)
+    item = ItemCrud(session).read(id=id)
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     if not current_user.is_superuser and (item.owner_id != current_user.id):
@@ -53,8 +52,7 @@ def create_item(
     """
     Create new item.
     """
-    return crud.create_item(
-        session=session,
+    return ItemCrud(session).create(
         item_in=item_in,
         owner_id=current_user.id,
     )
@@ -76,7 +74,7 @@ def update_item(
         raise HTTPException(status_code=404, detail="Item not found")
     if not current_user.is_superuser and (item.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    return crud.update_item(session=session, item=item, item_in=item_in)
+    return ItemCrud(session).update(item=item, item_in=item_in)
 
 
 @router.delete("/{id}")
@@ -91,5 +89,5 @@ def delete_item(
         raise HTTPException(status_code=404, detail="Item not found")
     if not current_user.is_superuser and (item.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    crud.delete_item(session=session, item=item)
+    ItemCrud(session).delete(item=item)
     return Message(message="Item deleted successfully")
