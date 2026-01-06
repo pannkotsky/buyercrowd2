@@ -1,0 +1,25 @@
+resolver 127.0.0.11 valid=30s;
+
+server {
+  listen 80;
+
+  location /api {
+    set $backend http://${BACKEND_HOST}:${BACKEND_PORT};
+    proxy_pass $backend;
+  }
+
+  location /docs {
+    set $backend http://${BACKEND_HOST}:${BACKEND_PORT};
+    proxy_pass $backend;
+  }
+
+  location /redoc {
+    set $backend http://${BACKEND_HOST}:${BACKEND_PORT};
+    proxy_pass $backend;
+  }
+
+  location / {
+    set $frontend http://${FRONTEND_HOST}:${FRONTEND_PORT};
+    proxy_pass $frontend;
+  }
+}

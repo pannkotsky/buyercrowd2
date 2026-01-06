@@ -1,23 +1,4 @@
 services:
-  db:
-    image: postgres:17
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
-    volumes:
-      - app-db-data:/var/lib/postgresql/data/pgdata
-    env_file:
-      - .env
-    environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
-      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
-      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
-
   prestart:
     image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
     build:
@@ -86,7 +67,7 @@ services:
           "-f",
           "http://localhost:8000/api/v1/utils/health-check/",
         ]
-      interval: 60s
+      interval: 10s
       timeout: 5s
       retries: 5
 
@@ -99,8 +80,16 @@ services:
     build:
       context: ./front
       args:
-        - VITE_API_URL=https://api.${DOMAIN?Variable not set}
         - NODE_ENV=production
 
-volumes:
-  app-db-data:
+  proxy:
+    depends_on:
+      back:
+        condition: service_healthy
+      front:
+        condition: service_started
+    environment:
+      - BACKEND_HOST=back
+      - BACKEND_PORT=8000
+      - FRONTEND_HOST=front
+      - FRONTEND_PORT=80

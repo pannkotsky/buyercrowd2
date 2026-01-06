@@ -2,35 +2,23 @@
 
 ## Docker Compose
 
+- Copy `.env.example` file at the root of a project to `.env`, make necessary changes if needed.
+
 - Start the local stack with Docker Compose:
 
 ```bash
-docker compose watch
+make dev
 ```
+
+- Start the backend and frontend services locally as described in [back/README.md](./back/README.md) and [front/README.md](./front/README.md).
 
 - Now you can open your browser and interact with these URLs:
 
-Frontend, built with Docker, with routes handled based on the path: <http://localhost:5173>
+Frontend: <http://localhost>
 
-Backend, JSON based web API based on OpenAPI: <http://localhost:8000>
+GraphiQL: <http://localhost/api/v1/graphql>
 
-Automatic interactive documentation with Swagger UI (from the OpenAPI backend): <http://localhost:8000/docs>
-
-Traefik UI, to see how the routes are being handled by the proxy: <http://localhost:8090>
-
-**Note**: The first time you start your stack, it might take a minute for it to be ready. While the backend waits for the database to be ready and configures everything. You can check the logs to monitor it.
-
-To check the logs, run (in another terminal):
-
-```bash
-docker compose logs
-```
-
-To check the logs of a specific service, add the name of the service, e.g.:
-
-```bash
-docker compose logs back
-```
+Automatic interactive documentation for REST API with Swagger UI: <http://localhost/docs>
 
 ## Mailcatcher
 
@@ -44,63 +32,19 @@ This is useful for:
 
 The backend is automatically configured to use Mailcatcher when running with Docker Compose locally (SMTP on port 1025). All captured emails can be viewed at <http://localhost:1080>.
 
-## Local Development
-
-The Docker Compose files are configured so that each of the services is available in a different port in `localhost`.
-
-For the backend and frontend, they use the same port that would be used by their local development server, so, the backend is at `http://localhost:8000` and the frontend at `http://localhost:5173`.
-
-This way, you could turn off a Docker Compose service and start its local development service, and everything would keep working, because it all uses the same ports.
-
-For example, you can stop that `front` service in the Docker Compose, in another terminal, run:
-
-```bash
-docker compose stop front
-```
-
-And then start the local frontend development server:
-
-```bash
-cd front
-npm run dev
-```
-
-Or you could stop the `back` Docker Compose service:
-
-```bash
-docker compose stop back
-```
-
-And then you can run the local development server for the backend:
-
-```bash
-cd back
-fastapi dev app/main.py
-```
-
 ## Docker Compose files and env vars
 
-There is a main `docker-compose.yml` file with all the configurations that apply to the whole stack, it is used automatically by `docker compose`.
+There is a base `docker-compose-base.yml` file with common services, like db.
 
-And there's also a `docker-compose.override.yml` with overrides for development, for example to mount the source code as a volume. It is used automatically by `docker compose` to apply overrides on top of `docker-compose.yml`.
+And there's also a `docker-compose-local.yml` with overrides and additions for development.
+
+For production-like use there is a `docker-compose-prod.yml`.
 
 These Docker Compose files use the `.env` file containing configurations to be injected as environment variables in the containers.
 
 They also use some additional configurations taken from environment variables set in the scripts before calling the `docker compose` command.
 
-After changing variables, make sure you restart the stack:
-
-```bash
-docker compose watch
-```
-
-## The .env file
-
-The `.env` file is the one that contains all your configurations, generated keys and passwords, etc.
-
-Depending on your workflow, you could want to exclude it from Git, for example if your project is public. In that case, you would have to make sure to set up a way for your CI tools to obtain it while building or deploying your project.
-
-One way to do it could be to add each environment variable to your CI/CD system, and updating the `docker-compose.yml` file to read that specific env var instead of reading the `.env` file.
+For convenience there are commands in `Makefile` to run dev and prod stacks.
 
 ## Pre-commits and code linting
 
@@ -140,49 +84,5 @@ Then you can `git add` the modified/fixed files again and now you can commit.
 you can also run `prek` manually on all the files, you can do it using `uv` with:
 
 ```bash
-❯ uv run prek run --all-files
-check for added large files..............................................Passed
-check toml...............................................................Passed
-check yaml...............................................................Passed
-fix end of files.........................................................Passed
-trim trailing whitespace.................................................Passed
-ruff.....................................................................Passed
-ruff-format..............................................................Passed
-biome check..............................................................Passed
+uv run prek run --all-files
 ```
-
-## URLs
-
-The production or staging URLs would use these same paths, but with your own domain.
-
-### Development URLs
-
-Development URLs, for local development.
-
-Frontend: <http://localhost:5173>
-
-Backend: <http://localhost:8000>
-
-Automatic Interactive Docs (Swagger UI): <http://localhost:8000/docs>
-
-Automatic Alternative Docs (ReDoc): <http://localhost:8000/redoc>
-
-Traefik UI: <http://localhost:8090>
-
-MailCatcher: <http://localhost:1080>
-
-### Development URLs with `localhost.buyercrowd.com` Configured
-
-Development URLs, for local development.
-
-Frontend: <http://dashboard.localhost.buyercrowd.com>
-
-Backend: <http://api.localhost.buyercrowd.com>
-
-Automatic Interactive Docs (Swagger UI): <http://api.localhost.buyercrowd.com/docs>
-
-Automatic Alternative Docs (ReDoc): <http://api.localhost.buyercrowd.com/redoc>
-
-Traefik UI: <http://localhost.buyercrowd.com:8090>
-
-MailCatcher: <http://localhost.buyercrowd.com:1080>

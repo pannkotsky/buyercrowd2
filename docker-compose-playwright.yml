@@ -1,0 +1,25 @@
+services:
+  playwright:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.playwright
+      args:
+        - VITE_API_URL=http://back:8000
+        - NODE_ENV=production
+    ipc: host
+    depends_on:
+      - back
+      - mailcatcher
+    env_file:
+      - .env
+    environment:
+      - VITE_API_URL=http://back:8000
+      - MAILCATCHER_HOST=http://mailcatcher:1080
+      # For the reports when run locally
+      - PLAYWRIGHT_HTML_HOST=0.0.0.0
+      - CI=${CI}
+    volumes:
+      - ./front/blob-report:/app/blob-report
+      - ./front/test-results:/app/test-results
+    ports:
+      - 9323:9323

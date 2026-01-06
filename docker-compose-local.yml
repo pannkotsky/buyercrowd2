@@ -1,0 +1,18 @@
+services:
+  db:
+    restart: "no"
+    ports:
+      - "5433:5432"
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+  proxy:
+    environment:
+      - BACKEND_HOST=host.docker.internal
+      - BACKEND_PORT=8000
+      - FRONTEND_HOST=host.docker.internal
+      - FRONTEND_PORT=5173

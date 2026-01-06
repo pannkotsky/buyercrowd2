@@ -28,7 +28,7 @@ jobs:
       - run: uv sync
         working-directory: back
       - run: docker compose down -v --remove-orphans
-      - run: docker compose up -d db mailcatcher
+      - run: docker compose -f docker-compose-base.yml -f docker-compose-local.yml up -d db
       - name: Migrate DB
         run: uv run bash scripts/prestart.sh
         working-directory: back
