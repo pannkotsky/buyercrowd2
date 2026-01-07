@@ -36,11 +36,3 @@ down_prod:
 		-f docker-compose-base.yml \
 		-f docker-compose-prod.yml \
 		down -v --remove-orphans
-
-down_e2e:
-	docker compose \
-		-f docker-compose-base.yml \
-		-f docker-compose-mailcatcher.yml \
-		-f docker-compose-prod.yml \
-		-f docker-compose-playwright.yml \
-		down -v --remove-orphans
