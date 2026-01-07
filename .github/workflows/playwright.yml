@@ -75,7 +75,7 @@ jobs:
       - name: Build services
         run: docker compose -f docker-compose-base.yml -f docker-compose-mailcatcher.yml -f docker-compose-prod.yml -f docker-compose-playwright.yml build
       - name: Run Playwright tests
-        run: docker compose -f docker-compose-base.yml -f docker-compose-mailcatcher.yml -f docker-compose-prod.yml -f docker-compose-playwright.yml run --rm playwright npx playwright test --fail-on-flaky-tests --trace=retain-on-failure --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: docker compose run --rm playwright npx playwright test --fail-on-flaky-tests --trace=retain-on-failure --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - name: Down services
         run: docker compose -f docker-compose-base.yml -f docker-compose-mailcatcher.yml -f docker-compose-prod.yml -f docker-compose-playwright.yml down -v --remove-orphans
       - name: Upload blob report to GitHub Actions Artifacts
