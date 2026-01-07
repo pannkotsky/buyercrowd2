@@ -43,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        shardIndex: [1, 2, 3, 4]
-        shardTotal: [4]
+        shardIndex: [1, 2]
+        shardTotal: [2]
       fail-fast: false
     steps:
       - uses: actions/checkout@v6
@@ -72,11 +72,12 @@ jobs:
       - run: uv run bash scripts/generate-client.sh
         env:
           VIRTUAL_ENV: back/.venv
-      - run: make build_e2e
-      - run: make down_e2e
+      - name: Build services
+        run: docker compose -f docker-compose-base.yml -f docker-compose-mailcatcher.yml -f docker-compose-prod.yml -f docker-compose-playwright.yml build
       - name: Run Playwright tests
         run: docker compose -f docker-compose-base.yml -f docker-compose-mailcatcher.yml -f docker-compose-prod.yml -f docker-compose-playwright.yml run --rm playwright npx playwright test --fail-on-flaky-tests --trace=retain-on-failure --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-      - run: make down_e2e
+      - name: Down services
+        run: docker compose -f docker-compose-base.yml -f docker-compose-mailcatcher.yml -f docker-compose-prod.yml -f docker-compose-playwright.yml down -v --remove-orphans
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6

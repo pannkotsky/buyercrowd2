@@ -37,22 +37,6 @@ down_prod:
 		-f docker-compose-prod.yml \
 		down -v --remove-orphans
 
-build_e2e:
-	docker compose \
-		-f docker-compose-base.yml \
-		-f docker-compose-mailcatcher.yml \
-		-f docker-compose-prod.yml \
-		-f docker-compose-playwright.yml \
-		build
-
-e2e:
-	docker compose \
-		-f docker-compose-base.yml \
-		-f docker-compose-mailcatcher.yml \
-		-f docker-compose-prod.yml \
-		-f docker-compose-playwright.yml \
-		up -d
-
 down_e2e:
 	docker compose \
 		-f docker-compose-base.yml \
